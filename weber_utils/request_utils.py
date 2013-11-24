@@ -1,5 +1,5 @@
 import functools
-from ._compat import httplib
+from ._compat import httplib, iteritems
 
 from flask import request, make_response
 from sqlalchemy.orm import class_mapper
@@ -25,11 +25,11 @@ def get_request_input(schema):
     data = request.json
     convert = False
     if data is None:
-        data = dict(request.form.iteritems())
+        data = dict(iteritems(request.form))
         convert = True
     returned = {}
     missing = set()
-    for param_name, param in schema.iteritems():
+    for param_name, param in iteritems(schema):
         if not isinstance(param, Parameter):
             param = Parameter(param)
         if param_name not in data and not param.optional:
