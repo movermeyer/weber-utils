@@ -62,14 +62,14 @@ class HTTPException(werkzeug.exceptions.HTTPException):
         self.code = code
         self.message = message
 
-    def get_response(self, _):
+    def get_response(self, _): # pragma: nocover
         return make_response((self.message, self.code, {}))
 
 def takes_schema_args(**schema):
     def decorator(func):
         @functools.wraps(func)
         def new_func():
-            return func(**get_request_params(schema))
+            return func(**get_request_input(schema))
         return new_func
     return decorator
 
@@ -78,3 +78,5 @@ def dictify_model(obj):
     Turns an SQLAlchemy object to a JSON dict
     """
     return {column.key: getattr(obj, column.key) for column in class_mapper(obj.__class__).columns}
+
+
