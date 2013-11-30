@@ -6,7 +6,7 @@ with open(os.path.join(os.path.dirname(__file__), "weber_utils", "__version__.py
     exec(version_file.read()) # pylint: disable=W0122
 
 _INSTALL_REQUIERS = [
-    "SQLAlchemy",
+    "Flask-SQLAlchemy",
     "Flask",
 ]
 
