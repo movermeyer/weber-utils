@@ -1,9 +1,14 @@
 import functools
-from ._compat import httplib, iteritems
 
-from flask import request, make_response
-from sqlalchemy.orm import class_mapper
+import logbook
 import werkzeug.exceptions
+from flask import make_response, request
+
+from sqlalchemy.orm import class_mapper
+
+from ._compat import httplib, iteritems, PY2
+
+_logger = logbook.Logger(__name__)
 
 class Parameter(object):
 
@@ -11,6 +16,8 @@ class Parameter(object):
 
     def __init__(self, parameter_types):
         super(Parameter, self).__init__()
+        if parameter_types is str and PY2:
+            parameter_types = (str, unicode)
         if not isinstance(parameter_types, tuple):
             parameter_types = (parameter_types,)
         self.types = parameter_types
@@ -40,12 +47,15 @@ def get_request_input(schema):
             try:
                 param_value = param.coerce(param_value)
             except ValueError:
+                _logger.debug("Cannot coerce parameter {0} ({1!r})", param_name, param_value)
                 error_abort_invalid_type(param_name, param_value)
         if not isinstance(param_value, param.types):
+            _logger.debug("Parameter {0} is of invalid type {1!r}", param_name, param_value)
             error_abort_invalid_type(param_name, param_value)
         returned[param_name] = param_value
 
     if missing:
+        _logger.debug("The following parameters are missing: {0}", missing)
         error_abort(httplib.BAD_REQUEST, "The following parameters are missing: {}".format(", ".join(sorted(missing))))
 
     return returned
@@ -78,5 +88,3 @@ def dictify_model(obj):
     Turns an SQLAlchemy object to a JSON dict
     """
     return {column.key: getattr(obj, column.key) for column in class_mapper(obj.__class__).columns}
-
-
