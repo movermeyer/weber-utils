@@ -8,6 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), "weber_utils", "__version__.py
 _INSTALL_REQUIERS = [
     "Flask-SQLAlchemy",
     "Flask",
+    "Logbook",
 ]
 
 setup(name="weber_utils",
