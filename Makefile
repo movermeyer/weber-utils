@@ -15,5 +15,6 @@ env: .env/.up-to-date
 	@echo "\x1b[32;01mSetting up environment. This could take a while...\x1b[0m"
 	virtualenv --no-site-packages .env
 	.env/bin/pip install -r test_requirements.txt
+	.env/bin/pip install -e .
 	touch .env/.up-to-date
 
