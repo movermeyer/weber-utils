@@ -36,6 +36,9 @@ class _StrictJSON(object):
             _abort_bad_request()
         return returned
 
+    def __contains__(self, key):
+        return key in request.json
+
 strict_json = _StrictJSON()
 
 def _abort_bad_request():

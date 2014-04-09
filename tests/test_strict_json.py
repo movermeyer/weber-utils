@@ -26,6 +26,10 @@ def test_nonexisting_key():
     with _assert_bad_request_context():
         strict_json["nonexisting"]
 
+def test_contains_key():
+    assert "nonexisting" not in strict_json
+    assert "int_key" in strict_json
+
 def test_string_key_no_explicit_type():
     assert strict_json["string_key"] == "value"
 
