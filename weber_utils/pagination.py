@@ -4,7 +4,7 @@ from flask import jsonify, request
 from flask.ext.sqlalchemy import Pagination
 from .request_utils import dictify_model, error_abort
 
-def paginate_query(query, default_page_size=100):
+def paginate_query(query, default_page_size=100, renderer=dictify_model):
     try:
         page_size = int(request.args.get("page_size", default_page_size))
         page = int(request.args.get("page", 1))
@@ -19,7 +19,7 @@ def paginate_query(query, default_page_size=100):
                 "total_num_pages": _ceil_div(num_objects, page_size) or 1,
                 "page": page,
             },
-            "result": [dictify_model(obj) for obj in query.offset((page-1)*page_size).limit(page_size)],
+            "result": [renderer(obj) for obj in query.offset((page-1)*page_size).limit(page_size)],
         }
 
 def _ceil_div(value, divisor):
