@@ -28,10 +28,12 @@ def _ceil_div(value, divisor):
         return int(returned) + 1
     return int(returned)
 
-def paginated_view(func):
+def paginated_view(func=None, renderer=dictify_model):
+    if func is None:
+        return functools.partial(paginated_view, renderer=renderer)
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         returned = func(*args, **kwargs)
-        return jsonify(paginate_query(returned))
+        return jsonify(paginate_query(returned, renderer=renderer))
 
     return new_func
