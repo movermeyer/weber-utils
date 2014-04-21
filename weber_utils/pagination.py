@@ -1,8 +1,11 @@
 import functools
+import httplib
 
 from flask import jsonify, request
 from flask.ext.sqlalchemy import Pagination
+
 from .request_utils import dictify_model, error_abort
+
 
 def paginate_query(query, default_page_size=100, renderer=dictify_model):
     try:
@@ -11,6 +14,9 @@ def paginate_query(query, default_page_size=100, renderer=dictify_model):
     except ValueError:
         error_abort(httplib.BAD_REQUEST, "Invalid integer value")
 
+    if page_size == 0:
+        error_abort(httplib.BAD_REQUEST, "Invalid page size")
+
     num_objects = query.count()
 
     return {
@@ -18,6 +24,7 @@ def paginate_query(query, default_page_size=100, renderer=dictify_model):
                 "total_num_objects": num_objects,
                 "total_num_pages": _ceil_div(num_objects, page_size) or 1,
                 "page": page,
+                "page_size": page_size,
             },
             "result": [renderer(obj) for obj in query.offset((page-1)*page_size).limit(page_size)],
         }
