@@ -10,6 +10,7 @@ from urlobject import URLObject
 
 import pytest
 from weber_utils.pagination import paginated_view
+from weber_utils.sorting import sorted_view
 
 
 class App(object):
@@ -52,11 +53,13 @@ def webapp(request):
     class Object(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         field1 = db.Column(db.Integer)
+        field2 = db.Column(db.Integer)
 
     db.create_all()
 
     @app.route("/objects")
     @paginated_view
+    @sorted_view(allowed_fields=["id", "field1"])
     def view_objects():
         return Object.query
 
@@ -73,8 +76,11 @@ def webapp(request):
     num_objects = 100
     field1_values = list(range(num_objects))
     random.shuffle(field1_values)
-    for field1_value in field1_values:
-        db.session.add(Object(field1=field1_value))
+    field2_values = list(range(num_objects))
+    random.shuffle(field2_values)
+
+    for field1_value, field2_value in zip(field1_values, field2_values):
+        db.session.add(Object(field1=field1_value, field2=field2_value))
 
     db.session.commit()
 
