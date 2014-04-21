@@ -75,7 +75,7 @@ def webapp(request):
 
     @app.route("/objects_by_field2")
     @paginated_view
-    @sorted_view(default="field2")
+    @sorted_view(default="-field2")
     def view_objects_by_field2():
         return Object.query
 

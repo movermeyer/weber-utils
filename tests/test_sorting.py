@@ -12,7 +12,7 @@ def test_sort_ascending(webapp, ascending):
 
 def test_sorting_default(webapp):
     returned = [obj["field2"] for obj in requests.get(webapp.url.add_path("objects_by_field2")).json()["result"]]
-    assert returned == list(range(webapp.num_objects))
+    assert returned == list(range(webapp.num_objects))[::-1]
 
 @pytest.mark.parametrize("forbidden_field", ["field2", "unknown"])
 def test_sort_by_forbidden_field(webapp, forbidden_field):
