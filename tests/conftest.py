@@ -1,3 +1,4 @@
+import itertools
 import random
 from uuid import uuid1
 
@@ -26,13 +27,18 @@ class App(object):
     def deactivate(self):
         self.loopback.deactivate_address((self.hostname, 80))
 
-    def get_page(self, page_size, page):
-        response = requests.get(self.url.add_path("objects").set_query_param("page", str(page)).set_query_param("page_size", str(page_size)))
+    def get_page(self, page_size, page, path=None):
+        if path is None:
+            path = "objects"
+        response = requests.get(self.url.add_path(path).set_query_param("page", str(page)).set_query_param("page_size", str(page_size)))
         response.raise_for_status()
         data = response.json()
         assert data["metadata"]["page"] == page
         assert data["metadata"]["page_size"] == page_size
         return data["result"]
+
+    def get_all_paged(self, page_size, path=None):
+        return list(itertools.chain.from_iterable(self.get_page(page_size, page, path=path) for page in range(1, (self.num_objects / page_size) + 5)))
 
 
 @pytest.fixture
@@ -54,6 +60,12 @@ def webapp(request):
     def view_objects():
         return Object.query
 
+    @app.route("/objects_different_renderer")
+    @paginated_view(renderer=lambda obj: {"id_value": obj.id})
+    def view_objects_different_renderer():
+        return Object.query
+
+
     num_objects = 100
     field1_values = list(range(num_objects))
     random.shuffle(field1_values)
@@ -68,3 +80,7 @@ def webapp(request):
     request.addfinalizer(returned.deactivate)
 
     return returned
+
+@pytest.fixture(params=[1, 10, 50])
+def page_size(request):
+    return request.param
