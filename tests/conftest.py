@@ -65,6 +65,10 @@ def webapp(request):
     def view_objects_different_renderer():
         return Object.query
 
+    @app.route("/objects_limited_page_size")
+    @paginated_view(max_page_size=10)
+    def view_objects_limited_page_size():
+        return Object.query
 
     num_objects = 100
     field1_values = list(range(num_objects))
