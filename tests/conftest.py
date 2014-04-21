@@ -66,7 +66,7 @@ def webapp(request):
         return Object.query
 
     @app.route("/objects_limited_page_size")
-    @paginated_view(max_page_size=10)
+    @paginated_view(max_page_size=10, default_page_size=5)
     def view_objects_limited_page_size():
         return Object.query
 

@@ -11,3 +11,8 @@ def test_pagination_different_renderer(webapp, page_size):
 def test_pagination_max_page_size(webapp):
     resp = requests.get(webapp.url.add_path("objects_limited_page_size").set_query_param("page_size", "11"))
     assert resp.status_code == requests.codes.bad_request
+
+def test_pagination_default_page_size(webapp):
+    resp = requests.get(webapp.url.add_path("objects_limited_page_size"))
+    resp.raise_for_status()
+    assert len(resp.json()["result"]) == 5
