@@ -1,9 +1,8 @@
 import functools
-import httplib
 
 from flask import jsonify, request
-from flask.ext.sqlalchemy import Pagination
 
+from ._compat import httplib
 from .request_utils import dictify_model, error_abort
 
 

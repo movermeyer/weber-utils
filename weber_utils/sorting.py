@@ -1,9 +1,9 @@
 import functools
-import httplib
 
 from flask import request
 from sqlalchemy import desc
 
+from ._compat import httplib
 from .request_utils import error_abort
 
 
@@ -23,7 +23,7 @@ def sort_query(query, allowed_fields=(), default=None):
             query = query.order_by(desc(sort_field) if descending else sort_field)
     elif default is not None:
         query = query.order_by(default)
-        
+
     return query
 
 
