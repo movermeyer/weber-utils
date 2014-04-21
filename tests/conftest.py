@@ -39,7 +39,7 @@ class App(object):
         return data["result"]
 
     def get_all_paged(self, page_size, path=None):
-        return list(itertools.chain.from_iterable(self.get_page(page_size, page, path=path) for page in range(1, (self.num_objects / page_size) + 5)))
+        return list(itertools.chain.from_iterable(self.get_page(page_size, page, path=path) for page in range(1, int(self.num_objects / page_size) + 5)))
 
 
 @pytest.fixture
