@@ -73,6 +73,13 @@ def webapp(request):
     def view_objects_limited_page_size():
         return Object.query
 
+    @app.route("/objects_by_field2")
+    @paginated_view
+    @sorted_view(default="field2")
+    def view_objects_by_field2():
+        return Object.query
+
+
     num_objects = 100
     field1_values = list(range(num_objects))
     random.shuffle(field1_values)
