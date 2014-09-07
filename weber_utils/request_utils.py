@@ -39,8 +39,9 @@ def get_request_input(schema):
     for param_name, param in iteritems(schema):
         if not isinstance(param, Parameter):
             param = Parameter(param)
-        if param_name not in data and not param.optional:
-            missing.add(param_name)
+        if param_name not in data:
+            if not param.optional:
+                missing.add(param_name)
             continue
         param_value = data[param_name]
         if convert:
