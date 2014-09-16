@@ -57,12 +57,12 @@ def get_request_input(schema):
 
     if missing:
         _logger.debug("The following parameters are missing: {0}", missing)
-        error_abort(httplib.BAD_REQUEST, "The following parameters are missing: {}".format(", ".join(sorted(missing))))
+        error_abort(httplib.BAD_REQUEST, "The following parameters are missing: {0}".format(", ".join(sorted(missing))))
 
     return returned
 
 def error_abort_invalid_type(param_name, param_value):
-    error_abort(httplib.BAD_REQUEST, "Invalid parameter value for {}: {!r}".format(param_name, param_value))
+    error_abort(httplib.BAD_REQUEST, "Invalid parameter value for {0}: {1!r}".format(param_name, param_value))
 
 def error_abort(code, message):
     raise HTTPException(code, message)
@@ -88,4 +88,4 @@ def dictify_model(obj):
     """
     Turns an SQLAlchemy object to a JSON dict
     """
-    return {column.key: getattr(obj, column.key) for column in class_mapper(obj.__class__).columns}
+    return dict((column.key, getattr(obj, column.key)) for column in class_mapper(obj.__class__).columns)
