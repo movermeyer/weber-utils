@@ -73,6 +73,12 @@ def webapp(request):
     def view_objects_limited_page_size():
         return Object.query
 
+    @app.route("/objects_no_count")
+    @paginated_view(max_page_size=10, default_page_size=5, include_count=False)
+    def view_objects_no_count():
+        return Object.query
+
+
     @app.route("/objects_by_field2")
     @paginated_view
     @sorted_view(default="-field2")

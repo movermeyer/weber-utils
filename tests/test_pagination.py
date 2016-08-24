@@ -16,3 +16,9 @@ def test_pagination_default_page_size(webapp):
     resp = requests.get(webapp.url.add_path("objects_limited_page_size"))
     resp.raise_for_status()
     assert len(resp.json()["result"]) == 5
+
+
+def test_pagination_dont_include_count(webapp):
+    resp = requests.get(webapp.url.add_path("objects_no_count"))
+    resp.raise_for_status()
+    assert list(resp.json()['metadata']) == []

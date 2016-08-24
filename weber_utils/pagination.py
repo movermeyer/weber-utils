@@ -6,7 +6,7 @@ from ._compat import httplib
 from .request_utils import dictify_model, error_abort
 
 
-def paginate_query(query, default_page_size=100, renderer=dictify_model, max_page_size=100):
+def paginate_query(query, default_page_size=100, renderer=dictify_model, max_page_size=100, include_count=True):
     try:
         page_size = int(request.args.get("page_size", default_page_size))
         page = int(request.args.get("page", 1))
@@ -16,17 +16,22 @@ def paginate_query(query, default_page_size=100, renderer=dictify_model, max_pag
     if page_size == 0 or page_size > max_page_size:
         error_abort(httplib.BAD_REQUEST, "Invalid page size")
 
-    num_objects = query.count()
 
-    return {
+    returned = {
             "metadata": {
-                "total_num_objects": num_objects,
-                "total_num_pages": _ceil_div(num_objects, page_size) or 1,
                 "page": page,
                 "page_size": page_size,
             },
             "result": [renderer(obj) for obj in query.offset((page-1)*page_size).limit(page_size)],
         }
+    if include_count:
+        num_objects = query.count()
+        returned['metadata'].update({
+            "total_num_objects": num_objects,
+            "total_num_pages": _ceil_div(num_objects, page_size) or 1,
+        })
+
+    return returned
 
 def _ceil_div(value, divisor):
     returned = float(value) / divisor
