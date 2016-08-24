@@ -21,4 +21,4 @@ def test_pagination_default_page_size(webapp):
 def test_pagination_dont_include_count(webapp):
     resp = requests.get(webapp.url.add_path("objects_no_count"))
     resp.raise_for_status()
-    assert list(resp.json()['metadata']) == []
+    assert set(resp.json()['metadata']) == {'page_size', 'page'}
