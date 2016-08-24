@@ -1,11 +1,19 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "3.4"
+- '2.7'
+- '3.3'
+- '3.4'
+- '3.5'
 install:
-  - pip install -r test_requirements.txt
-  - pip install -e .
-script: 
-  - py.test
+- pip install -r test_requirements.txt
+- pip install -e .
+script:
+- py.test
+deploy:
+  provider: pypi
+  user: vmalloc
+  password:
+    secure: I0q3jU3B3lQvdlnpCU2E0tPEZeDCDEmD8C4pd+2aNt7bTnnq+fLtsHWTyMW8hiybIj80/wGVdM4l6j7Rvi+rQgjQhDOoMkvKon+DtH8LLgGShgPqFzuTOIBSWMjk2OoRdtDBFZlFMkDxsLoD3Gdx41O288+TZ3MT9oASuaXv/LA=
+  on:
+    tags: true
+    repo: vmalloc/weber-utils
